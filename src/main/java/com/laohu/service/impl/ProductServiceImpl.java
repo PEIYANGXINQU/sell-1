@@ -1,6 +1,9 @@
 package com.laohu.service.impl;
 
 import com.laohu.dataobject.ProductInfo;
+import com.laohu.dto.CartDTO;
+import com.laohu.enums.ResultEnum;
+import com.laohu.exception.SellException;
 import com.laohu.repository.ProductInfoRepository;
 import com.laohu.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,4 +42,26 @@ public class ProductServiceImpl implements ProductService {
     public ProductInfo save(ProductInfo productInfo) {
         return repository.save(productInfo);
     }
+
+    @Override
+    public void increaseStock(List<CartDTO> cartDTOList) {
+
+    }
+
+    @Override
+    public void decreaseStock(List<CartDTO> cartDTOList) {
+        for(CartDTO cartDTO:cartDTOList){
+            ProductInfo productInfo=repository.findOne(cartDTO.getProductId());
+            if(productInfo==null){
+                throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+            }
+            Integer result=productInfo.getProductStatus() - cartDTO.getProductQuantity();
+            if(result<0){
+                throw new SellException(ResultEnum.PRODUCT_STOCK_ERROR);
+            }
+            productInfo.setProductStock(result);
+            repository.save(productInfo);
+        }
+    }
+
 }
