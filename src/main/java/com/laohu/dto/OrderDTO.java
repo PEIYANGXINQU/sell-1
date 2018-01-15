@@ -42,6 +42,6 @@ public class OrderDTO {
     private Data updateTime;
 //    //数据库里面没有service但是需要.这时可以在新建一个包dto数据传输对象
 //    @Transient
-    private List<OrderDetil> orderDetilList;
+    private List<OrderDetil> orderDetailList;
 
 }
