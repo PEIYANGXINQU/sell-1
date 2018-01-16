@@ -1,8 +1,11 @@
 package com.laohu.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.laohu.dataobject.OrderDetil;
 import com.laohu.enums.OrderStatusEnum;
 import com.laohu.enums.PayStatusEnum;
+import com.laohu.util.serializer.Date2LongSerializer;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.Id;
@@ -18,6 +21,7 @@ import java.util.List;
  * @Email 1206966083@qq.com
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderDTO {
     /**订单id*/
     @Id
@@ -37,8 +41,11 @@ public class OrderDTO {
     /**支付状态，默认是0未支付*/
     private Integer payStatus;
     /**创建时间*/
+    @JsonSerialize(using=Date2LongSerializer.class)
     private Data createTime;
     /**跟新时间*/
+
+    @JsonSerialize(using=Date2LongSerializer.class)
     private Data updateTime;
 //    //数据库里面没有service但是需要.这时可以在新建一个包dto数据传输对象
 //    @Transient

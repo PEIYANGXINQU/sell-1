@@ -1,14 +1,16 @@
 package com.laohu.controller;
 
+import com.laohu.converter.OrderForm2OrderDTOConverter;
 import com.laohu.dto.OrderDTO;
 import com.laohu.enums.ResultEnum;
 import com.laohu.exception.SellException;
+import com.laohu.form.OrderForm;
+import com.laohu.service.BuyerService;
 import com.laohu.service.OrderService;
 import com.laohu.util.ResultVOUtil;
 import com.laohu.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.CollectionUtils;
@@ -36,7 +38,7 @@ public class BuyerOrderController {
     private BuyerService buyerService;
     //创建订单
     @PostMapping("/create")
-    public ResultVO<Map<String ,String>>create(@Valid OederForm orderForm, BindingResult bindingResult){
+    public ResultVO<Map<String ,String>>create(@Valid OrderForm orderForm, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             log.error("【创建订单】参数不正确, orderForm={}", orderForm);
             throw new SellException(ResultEnum.PARAM_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());
@@ -56,7 +58,7 @@ public class BuyerOrderController {
     }
     //订单列表
     @GetMapping("/list")
-    public ResultVO<List<OrderDTO>> list(@RequestParam("openid")String openid, @RequestParam(value="page",defaultValue="0") Integer page, @RequestParam(Value="size " ,defaultValue = "10") Integer size){
+    public ResultVO<List<OrderDTO>> list(@RequestParam("openid")String openid, @RequestParam(value="page",defaultValue="0") Integer page, @RequestParam(value="size " ,defaultValue = "10") Integer size){
         if(StringUtils.isEmpty(openid)){
             log.error("【查询订单列表】openid为空");
             throw new SellException(ResultEnum.PARAM_ERROR);
@@ -70,12 +72,15 @@ public class BuyerOrderController {
     @GetMapping("/detail")
     public ResultVO<OrderDTO> detail(@RequestParam("openid")String openid,@RequestParam("orderId") String orderId){
         OrderDTO orderDTO=buyerService.findOrderOne(openid,orderId);
+        //OrderDTO orderDTO=orderService.findOne(orderId);
         return ResultVOUtil.success(orderDTO);
     }
     //取消订单
     @PostMapping("/cancel")
     public ResultVO cancel(@RequestParam("openid")String openid,@RequestParam("orderId" )String orderId){
         buyerService.cancelOrder(openid,orderId);
+//        OrderDTO orderDTO=orderService.findOne(orderId);
+//        orderService.cancel(orderDTO);
         return ResultVOUtil.success();
     }
 }
