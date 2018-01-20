@@ -18,3 +18,10 @@ server:
 ##  level:
 ##    com.laohu.***
 #  level: debug
+wechat:
+  mpAppId: 没有
+  mpAppSecret: 没有
+  mchId: 1409146202
+  mchKey: c9654546545
+  keyPath: /var/weixin_cert/h5.p12
+  notifyUrl: http://sell*****/sell/pay/notify

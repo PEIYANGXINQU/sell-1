@@ -13,6 +13,7 @@ import com.laohu.exception.SellException;
 import com.laohu.repository.OrderDetilRepository;
 import com.laohu.repository.OrderMasterRepository;
 import com.laohu.service.OrderService;
+import com.laohu.service.PayService;
 import com.laohu.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -45,8 +46,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderMasterRepository orderMasterRepository;
 
-//    @Autowired
-//    private PayService payService;
+    @Autowired
+    private PayService payService;
 //
 //    @Autowired
 //    private PushMessageService pushMessageService;
@@ -148,7 +149,7 @@ public class OrderServiceImpl implements OrderService {
 
         //如果已支付, 需要退款
         if (orderDTO.getPayStatus().equals(PayStatusEnum.SUCCESS.getCode())) {
-            //payService.refund(orderDTO);
+            payService.refund(orderDTO);
         }
 
         return orderDTO;
