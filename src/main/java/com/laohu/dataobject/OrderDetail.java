@@ -1,8 +1,7 @@
 package com.laohu.dataobject;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-
+import javax.persistence.Id;
 import javax.persistence.Entity;
 import java.math.BigDecimal;
 
