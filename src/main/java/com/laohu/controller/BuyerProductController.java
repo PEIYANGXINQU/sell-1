@@ -10,8 +10,10 @@ import com.laohu.vo.ProductVO;
 import com.laohu.vo.ResultVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -31,7 +33,10 @@ public class BuyerProductController {
     @Autowired
     private CategoryService categoryService;
     @GetMapping("/list")
-    public ResultVO list(){
+    //如果长度大于三则缓存  如果结果正确（json返回status==0）则缓存
+    //@Cacheable(cacheNames = "product",key = "#sellerId",condition="#sellerId.length()>3",unless="#result.getCode() !=0")
+    @Cacheable(cacheNames = "product",key = "123")
+    public ResultVO list(@RequestParam("sellerId") String sellerId){
         //1.查询所有的上架商品
         List<ProductInfo> productInfoList=productService.findUpAll();
         //2.查询类目(一次查询)
@@ -62,13 +67,6 @@ public class BuyerProductController {
             productVO.setProductInfoVOList(productInfoVOList);
             productVOList.add(productVO);
         }
-
-
-
-
-
-
-
 
 //        ResultVO resultVO =new ResultVO();
 //        resultVO.setCode(0);

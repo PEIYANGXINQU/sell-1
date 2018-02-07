@@ -2,11 +2,14 @@ package com.laohu.service.impl;
 
 import com.laohu.dataobject.ProductInfo;
 import com.laohu.dto.CartDTO;
+import com.laohu.enums.ProductStatusEnum;
 import com.laohu.enums.ResultEnum;
 import com.laohu.exception.SellException;
 import com.laohu.repository.ProductInfoRepository;
 import com.laohu.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ public class ProductServiceImpl implements ProductService {
     private ProductInfoRepository repository;
 
     @Override
+    //@Cacheable(cacheNames = "product",key = "123")
     public ProductInfo findOne(String productId) {
         return repository.findOne(productId);
     }
@@ -39,6 +43,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    //@CachePut(cacheNames = "product",key = "123")
     public ProductInfo save(ProductInfo productInfo) {
         return repository.save(productInfo);
     }
@@ -62,6 +67,34 @@ public class ProductServiceImpl implements ProductService {
             productInfo.setProductStock(result);
             repository.save(productInfo);
         }
+    }
+
+    @Override
+    public ProductInfo onSale(String productId) {
+        ProductInfo productInfo=repository.findOne(productId);
+        if(productId==null){
+            throw  new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+        }
+        if(productInfo.getProductStatus()== ProductStatusEnum.UP.getCode()){
+            throw  new SellException(ResultEnum.PRODUCT_STATUS_ERROT);
+        }
+        //跟新
+        productInfo.setProductStatus(ProductStatusEnum.UP.getCode());
+        return repository.save(productInfo);
+    }
+
+    @Override
+    public ProductInfo offSale(String productId) {
+        ProductInfo productInfo=repository.findOne(productId);
+        if(productId==null){
+            throw  new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+        }
+        if(productInfo.getProductStatus()== ProductStatusEnum.DOWM.getCode()){
+            throw  new SellException(ResultEnum.PRODUCT_STATUS_ERROT);
+        }
+        //跟新
+        productInfo.setProductStatus(ProductStatusEnum.DOWM.getCode());
+        return repository.save(productInfo);
     }
 
 }

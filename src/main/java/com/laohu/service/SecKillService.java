@@ -1,7 +1,8 @@
-package com.laohu.controller;
+package com.laohu.service;
 
 import com.laohu.exception.SellException;
 import com.laohu.util.KeyUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -13,7 +14,10 @@ import java.util.Map;
  * @Email 1206966083@qq.com
  */
 @Service
-public class SecKillController {
+public class SecKillService {
+    @Autowired
+    private ReadisLock readisLock;
+    private static final int TIMEOUT = 10 * 1000;//超时时间 10s
     /**
      * 国庆活动，皮蛋粥特价，限量100000份
      */
@@ -41,11 +45,17 @@ public class SecKillController {
     public String querySecKillProductInfo(String productId){
         return this.queryMap(productId);
     }
-    public void orderProductMockDiffUser(String productId){
+    //加同步锁但是会变慢 synchronized
+    public  void orderProductMockDiffUser(String productId){
+        //加锁
+        long time = System.currentTimeMillis()+TIMEOUT;
+        if(!readisLock.lock(productId,String.valueOf(time))){
+            throw new SellException(101,"人太多了，换个姿势试下");
+        }
         //1.查询该商品库存，为0则活动结束。
         int stockNum = stock.get(productId);
         if(stockNum==0){
-            throw  new SellException(100,"活动结束")；
+            throw  new SellException(100,"活动结束");
         }else{
             //2.下单（模拟不同用户openid不同）
             orders.put(KeyUtil.genUniqueKey(),productId);
@@ -57,5 +67,7 @@ public class SecKillController {
             }
             stock.put(productId,stockNum);
         }
+        //解锁
+        readisLock.unlock(productId,String.valueOf(time));
     }
 }

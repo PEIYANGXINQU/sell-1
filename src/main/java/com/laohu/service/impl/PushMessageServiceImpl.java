@@ -2,17 +2,15 @@ package com.laohu.service.impl;
 
 import com.laohu.config.WechatAccountConfig;
 import com.laohu.dto.OrderDTO;
-import com.laohu.service.PushMessage;
+import com.laohu.service.PushMessageService;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
-import me.chanjar.weixin.mp.bean.template.WxMpTemplate;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateData;
 import me.chanjar.weixin.mp.bean.template.WxMpTemplateMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,7 +21,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class PushMessageImpl implements PushMessage {
+public class PushMessageServiceImpl implements PushMessageService {
     @Autowired
     private WxMpService wxMpService;
     @Autowired

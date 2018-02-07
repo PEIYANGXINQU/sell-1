@@ -1,7 +1,7 @@
 package com.laohu.service.impl;
 
 import com.laohu.converter.OrderMaster2OrderDTOConverter;
-import com.laohu.dataobject.OrderDetil;
+import com.laohu.dataobject.OrderDetail;
 import com.laohu.dataobject.OrderMaster;
 import com.laohu.dataobject.ProductInfo;
 import com.laohu.dto.CartDTO;
@@ -9,12 +9,14 @@ import com.laohu.dto.OrderDTO;
 import com.laohu.enums.OrderStatusEnum;
 import com.laohu.enums.PayStatusEnum;
 import com.laohu.enums.ResultEnum;
+import com.laohu.exception.ResponseBankException;
 import com.laohu.exception.SellException;
-import com.laohu.repository.OrderDetilRepository;
+import com.laohu.repository.OrderDetailRepository;
 import com.laohu.repository.OrderMasterRepository;
 import com.laohu.service.OrderService;
 import com.laohu.service.PayService;
 import com.laohu.service.ProductService;
+import com.laohu.service.WebSocket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,18 +44,18 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ProductService productService;
     @Autowired
-    private OrderDetilRepository orderDetilRepository;
+    private OrderDetailRepository orderDetailRepository;
     @Autowired
     private OrderMasterRepository orderMasterRepository;
 
     @Autowired
     private PayService payService;
 //
-//    @Autowired
-//    private PushMessageService pushMessageService;
-//
-//    @Autowired
-//    private WebSocket webSocket;
+    @Autowired
+    private PushMessageServiceImpl pushMessageService;
+
+    @Autowired
+    private WebSocket webSocket;
     @Override
     public OrderDTO create(OrderDTO orderDTO) {
         String orderId= com.laohu.util.KeyUtil.genUniqueKey();
@@ -61,22 +63,23 @@ public class OrderServiceImpl implements OrderService {
 //        List<CartDTO> cartDTOList=new ArrayList<>();
 
         //1.查询商品（数量，价格）
-        for(OrderDetil orderDetil:orderDTO.getOrderDetailList()){
-            ProductInfo productInfo=productService.findOne(orderDetil.getProductId());
+        for(OrderDetail orderDetail :orderDTO.getOrderDetailList()){
+            ProductInfo productInfo=productService.findOne(orderDetail.getProductId());
             if(productInfo==null){
-                throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+               throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+                //throw new ResponseBankException();
             }
             //2.计算订单总价
-            orderDetil.getProductPrice()
-                    .multiply(new BigDecimal(orderDetil.getProductQuantity()))
+            orderDetail.getProductPrice()
+                    .multiply(new BigDecimal(orderDetail.getProductQuantity()))
                     .add(orderAmount);
             //订单详情入库
-            orderDetil.setDetailId(com.laohu.util.KeyUtil.genUniqueKey());
-            orderDetil.setOrderId(orderId);
-            BeanUtils.copyProperties(productInfo,orderDetil);
-            orderDetilRepository.save(orderDetil);
+            orderDetail.setDetailId(com.laohu.util.KeyUtil.genUniqueKey());
+            orderDetail.setOrderId(orderId);
+            BeanUtils.copyProperties(productInfo, orderDetail);
+            orderDetailRepository.save(orderDetail);
 
-//            CartDTO cartDTO=new CartDTO(orderDetil.getProductId(),orderDetil.getProductQuantity());
+//            CartDTO cartDTO=new CartDTO(orderDetail.getProductId(),orderDetail.getProductQuantity());
 //            cartDTOList.add(cartDTO);
         }
 
@@ -93,6 +96,8 @@ public class OrderServiceImpl implements OrderService {
         ).collect(Collectors.toList());
         productService.decreaseStock(cartDTOList);
 
+        //发送websocket消息
+        webSocket.sendMessage("有新的订单");
         return orderDTO ;
     }
 
@@ -102,19 +107,19 @@ public class OrderServiceImpl implements OrderService {
         if(orderMaster==null){
             throw new SellException(ResultEnum.ORDER_NOT_EXIST);
         }
-        List<OrderDetil> orderDetilList=orderDetilRepository.findByOAndOrderId(orderId);
-        if(orderDetilList==null){
+        List<OrderDetail> orderDetailList = orderDetailRepository.findByAndOrderId(orderId);
+        if(orderDetailList ==null){
             throw new SellException(ResultEnum.ORDERDETAIL_NOT_EXIST);
         }
         OrderDTO orderDTO=new OrderDTO();
         BeanUtils.copyProperties(orderMaster,orderDTO);
-        orderDTO.setOrderDetailList(orderDetilList);
+        orderDTO.setOrderDetailList(orderDetailList);
         return orderDTO;
     }
 
     @Override
     public Page<OrderDTO> findList(String buyerOpenid, Pageable pageable) {
-        Page<OrderMaster> orderMasterPage=orderMasterRepository.findByBuerBuyerOpenid(buyerOpenid,pageable);
+        Page<OrderMaster> orderMasterPage=orderMasterRepository.findByBuyerOpenid(buyerOpenid,pageable);
         List<OrderDTO> orderDTOList=OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
         return new PageImpl<OrderDTO>(orderDTOList,pageable,orderMasterPage.getTotalElements()) ;
     }
@@ -174,7 +179,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         //推送微信模版消息
-        //pushMessageService.orderStatus(orderDTO);
+        pushMessageService.orderStatus(orderDTO);
 
         return orderDTO;
     }
@@ -205,5 +210,12 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return orderDTO;
+    }
+
+    @Override
+    public Page<OrderDTO> findList(Pageable pageable) {
+        Page<OrderMaster> orderMasterPage=orderMasterRepository.findAll(pageable);
+        List<OrderDTO> orderDTOList=OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
+        return new PageImpl<OrderDTO>(orderDTOList,pageable,orderMasterPage.getTotalElements()) ;
     }
 }

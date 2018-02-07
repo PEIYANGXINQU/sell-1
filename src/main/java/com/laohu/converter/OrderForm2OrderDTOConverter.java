@@ -2,7 +2,7 @@ package com.laohu.converter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.laohu.dataobject.OrderDetil;
+import com.laohu.dataobject.OrderDetail;
 import com.laohu.dto.OrderDTO;
 import com.laohu.enums.ResultEnum;
 import com.laohu.exception.SellException;
@@ -26,18 +26,18 @@ public class OrderForm2OrderDTOConverter {
         orderDTO.setBuyerAddress(orderForm.getAddress());
         orderDTO.setBuyerOpenid(orderForm.getOpenid());
 
-        List<OrderDetil> orderDetilList=new ArrayList<>();
+        List<OrderDetail> orderDetailList =new ArrayList<>();
         //json转换成list;
         Gson gson=new Gson();
         try {
-            gson.fromJson(orderForm.getItems(),new TypeToken<List<OrderDetil>>(){}.getType());
+            gson.fromJson(orderForm.getItems(),new TypeToken<List<OrderDetail>>(){}.getType());
         }catch (Exception e){
             log.error("【对象转换】错误，string={}",orderForm.getItems());
             throw new SellException(ResultEnum.PARAM_ERROR);
         }
 
 
-        orderDTO.setOrderDetailList(orderDetilList);
+        orderDTO.setOrderDetailList(orderDetailList);
         return orderDTO;
     }
 }

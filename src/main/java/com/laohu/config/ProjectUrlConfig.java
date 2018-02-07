@@ -2,6 +2,7 @@ package com.laohu.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by @Author tachai on 2018/1/23.
@@ -9,8 +10,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @Email 1206966083@qq.com
  */
 @Data
+@Component
 @ConfigurationProperties(prefix="projectUrl")
-public class ProjectUrl {
+public class ProjectUrlConfig {
     /**
      * 微信公众平台授权url
      */

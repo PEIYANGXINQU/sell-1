@@ -1,6 +1,6 @@
-package com.imooc.repository;
+package com.laohu.repository;
 
-import com.imooc.dataobject.SellerInfo;
+import com.laohu.dataobject.SellerInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

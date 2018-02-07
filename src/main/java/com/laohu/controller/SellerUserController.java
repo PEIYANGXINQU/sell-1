@@ -1,12 +1,13 @@
-package com.imooc.controller;
+package com.laohu.controller;
 
-import com.imooc.config.ProjectUrlConfig;
-import com.imooc.constant.CookieConstant;
-import com.imooc.constant.RedisConstant;
-import com.imooc.dataobject.SellerInfo;
-import com.imooc.enums.ResultEnum;
-import com.imooc.service.SellerService;
-import com.imooc.utils.CookieUtil;
+
+import com.laohu.config.ProjectUrlConfig;
+import com.laohu.constant.CookieConstant;
+import com.laohu.constant.RedisConstant;
+import com.laohu.dataobject.SellerInfo;
+import com.laohu.enums.ResultEnum;
+import com.laohu.service.SellerService;
+import com.laohu.util.CookieUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;

@@ -5,5 +5,5 @@ package com.laohu.exception;
  *
  * @Email 1206966083@qq.com
  */
-public class ResponseBankException {
+public class ResponseBankException extends RuntimeException {
 }

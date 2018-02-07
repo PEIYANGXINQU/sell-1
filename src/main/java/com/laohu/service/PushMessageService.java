@@ -7,7 +7,7 @@ import com.laohu.dto.OrderDTO;
  *
  * @Email 1206966083@qq.com
  */
-public interface PushMessage {
+public interface PushMessageService {
     /**
      * 订单状态变更消息
      * @param orderDTO

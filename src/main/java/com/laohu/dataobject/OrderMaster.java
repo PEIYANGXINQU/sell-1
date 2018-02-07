@@ -4,11 +4,11 @@ import com.laohu.enums.OrderStatusEnum;
 import com.laohu.enums.PayStatusEnum;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.Id;
-
+import javax.persistence.Id;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,11 +38,11 @@ public class OrderMaster {
     /**支付状态，默认是0未支付*/
     private Integer payStatus= PayStatusEnum.WAIT.getCode();
     /**创建时间*/
-    private Data createTime;
+    private Date createTime;
     /**跟新时间*/
-    private Data updateTime;
+    private Date updateTime;
     //数据库里面没有service但是需要
     @Transient
-    private List<OrderDetil> orderDetilList;
+    private List<OrderDetail> orderDetailList;
 
 }

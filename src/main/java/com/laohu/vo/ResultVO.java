@@ -3,6 +3,8 @@ package com.laohu.vo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * Created by @Author tachai on 2018/1/11.
  *
@@ -14,7 +16,9 @@ import lombok.Data;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ResultVO<T> {
+public class ResultVO<T> implements Serializable {
+
+    private static final long serialVersionUID = -5187102223852215264L;
     /**错误码*/
     private Integer code;
     /**提示的信息*/

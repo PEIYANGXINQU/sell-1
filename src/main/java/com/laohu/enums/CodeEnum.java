@@ -6,4 +6,5 @@ package com.laohu.enums;
  * @Email 1206966083@qq.com
  */
 public interface CodeEnum {
+   Integer getCode();
 }

@@ -1,6 +1,6 @@
 package com.laohu.repository;
 
-import com.laohu.dataobject.OrderDetil;
+import com.laohu.dataobject.OrderDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -10,6 +10,6 @@ import java.util.List;
  *
  * @Email 1206966083@qq.com
  */
-public interface OrderDetilRepository extends JpaRepository<OrderDetil,String> {
-    List<OrderDetil> findByOAndOrderId(String orderId);
+public interface OrderDetailRepository extends JpaRepository<OrderDetail,String> {
+    List<OrderDetail> findByAndOrderId(String detailId);
 }

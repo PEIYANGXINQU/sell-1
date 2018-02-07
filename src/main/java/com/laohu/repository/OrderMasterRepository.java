@@ -11,4 +11,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @Email 1206966083@qq.com
  */
 public interface OrderMasterRepository extends JpaRepository<OrderMaster,String> {
-    Page<OrderMaster> findByBuerBuyerOpenid(String buyerOpenid, Pageable pageable);}
+    Page<OrderMaster> findByBuyerOpenid(String buyerOpenid, Pageable pageable);}

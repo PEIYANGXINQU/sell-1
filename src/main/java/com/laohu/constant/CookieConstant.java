@@ -5,5 +5,7 @@ package com.laohu.constant;
  *
  * @Email 1206966083@qq.com
  */
-public class CookieConstant {
+public interface CookieConstant {
+    String TOKEN="token";
+    Integer EXPIRE=7200;
 }

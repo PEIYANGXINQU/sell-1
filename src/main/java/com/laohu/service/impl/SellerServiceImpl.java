@@ -1,8 +1,8 @@
-package com.imooc.service.impl;
+package com.laohu.service.impl;
 
-import com.imooc.dataobject.SellerInfo;
-import com.imooc.repository.SellerInfoRepository;
-import com.imooc.service.SellerService;
+import com.laohu.dataobject.SellerInfo;
+import com.laohu.repository.SellerInfoRepository;
+import com.laohu.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,17 +1,17 @@
 package com.laohu.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.laohu.dataobject.OrderDetil;
+import com.laohu.dataobject.OrderDetail;
 import com.laohu.enums.OrderStatusEnum;
 import com.laohu.enums.PayStatusEnum;
+import com.laohu.util.EnumUtil;
 import com.laohu.util.serializer.Date2LongSerializer;
 import lombok.Data;
-import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 
-import javax.persistence.Entity;
-import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -48,7 +48,14 @@ public class OrderDTO {
     @JsonSerialize(using=Date2LongSerializer.class)
     private Data updateTime;
 //    //数据库里面没有service但是需要.这时可以在新建一个包dto数据传输对象
-//    @Transient
-    private List<OrderDetil> orderDetailList;
-
+    @Transient
+     List<OrderDetail> orderDetailList;
+     @JsonIgnore
+    public OrderStatusEnum getOrderStatusEnum(){
+        return EnumUtil.getByCode(orderStatus,OrderStatusEnum.class);
+    }
+    @JsonIgnore
+    public PayStatusEnum getPayStatusEnum(){
+        return EnumUtil.getByCode(payStatus,PayStatusEnum.class);
+    }
 }

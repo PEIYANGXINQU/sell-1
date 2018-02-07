@@ -1,6 +1,7 @@
-package com.imooc.service;
+package com.laohu.service;
 
-import com.imooc.dataobject.SellerInfo;
+
+import com.laohu.dataobject.SellerInfo;
 
 /**
  * 卖家端

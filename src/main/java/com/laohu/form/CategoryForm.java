@@ -1,4 +1,4 @@
-package com.imooc.form;
+package com.laohu.form;
 
 import lombok.Data;
 

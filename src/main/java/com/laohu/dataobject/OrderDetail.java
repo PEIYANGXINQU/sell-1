@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Data
-public class OrderDetil {
+public class OrderDetail {
     @Id
     private String detailId;
     /**订单id*/

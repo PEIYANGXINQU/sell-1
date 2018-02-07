@@ -10,8 +10,10 @@ import java.util.List;
  * @Email 1206966083@qq.com
  */
 public interface CategoryService {
-    ProductCategory findone(Integer categoryId);
+    ProductCategory findOne(Integer categoryId);
     List<ProductCategory> findAll();
     List<ProductCategory> findByCategoryTypeIn(List<Integer> categoryTypeList);
     ProductCategory save(ProductCategory productCategory);
+
+
 }
